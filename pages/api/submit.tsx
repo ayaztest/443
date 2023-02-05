@@ -8,7 +8,7 @@ type SheetForm = {
     country: string
     wallet: string
     total: string
-    option: string
+    selectedOption: string
     streetAddress: string
 }
 
@@ -46,7 +46,7 @@ export default async function handler(
             valueInputOption: 'USER_ENTERED',
             requestBody: {
                 values: [
-                    [body.firstname, body.lastname, body.email, body.streetAddress, body.country, body.wallet, body.total, body.option]
+                    [body.firstname, body.lastname, body.email, body.streetAddress, body.country, body.wallet, body.total, body.selectedOption]
                 ]
             }
         });

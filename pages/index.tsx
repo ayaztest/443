@@ -85,7 +85,7 @@ const [showPopup, setShowPopup] = useState(false)
       country,
       wallet,
       total,
-      option,
+      selectedOption,
       streetAddress,
     }
 
@@ -230,30 +230,34 @@ useEffect(() => {
              placeholder='Your Wallet'  readOnly required
             />
                
-                </div><div className="mt-5">
-  <label htmlFor="options" className="text-base font-semibold">Do you Own BOTH PreSend & Wolfer Finance NFTs:</label>
-  <div className="flex flex-col mt-5"> <div className='flex-row mb-3'>
-    <input 
-      type="radio" 
-      id="option1" 
-      name="options" 
-      value="option"
-      checked={selectedOption === 'yes'}
-      onChange={(e) => setSelectedOption(e.target.value)} 
-    />
-    <label htmlFor="option1" className="text-md cursor-pointer font-medium   ml-5">Yes I own both</label></div>
-<div className='flex-row'>
-    <input 
-      type="radio" 
-      id="option2" 
-      name="options" 
-      value="option"
-      checked={selectedOption === 'no'}
-      onChange={(e) => setSelectedOption(e.target.value)} 
-    />
-    <label htmlFor="option2" className="text-md font-medium cursor-pointer ml-5">No i don't</label></div>
+                </div><div className="flex flex-col mt-5">
+    <div className="flex-row mb-3">
+      <input
+        type="radio"
+        id="option1"
+        name="options"
+        value="yes"
+        checked={selectedOption === 'yes'}
+        onChange={(e) => setSelectedOption(e.target.value)}
+      />
+      <label htmlFor="option1" className="text-md cursor-pointer font-medium ml-5">
+        Yes I own both
+      </label>
+    </div>
+    <div className="flex-row">
+      <input
+        type="radio"
+        id="option2"
+        name="options"
+        value="no"
+        checked={selectedOption === 'no'}
+        onChange={(e) => setSelectedOption(e.target.value)}
+      />
+      <label htmlFor="option2" className="text-md font-medium cursor-pointer ml-5">
+        No I don't
+      </label>
+    </div>
   </div>
-</div>
                 
           <div className='flex items-center justify-center'>
             <button

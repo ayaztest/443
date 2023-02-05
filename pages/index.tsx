@@ -28,8 +28,9 @@ const Home: NextPage = () => {
   const [selectedOption, setSelectedOption] = useState('no');
 const [option, setOption] = useState(selectedOption)
   const [streetAddress, setStreetAddress] = useState('')
-const [ownedNFTNames, setOwnedNFTNames] = useState<string[]>([]);
-
+  const [ownedNFTNamestwo, setOwnedNFTNamestwo] = useState<string[]>([]);
+  const [ownedNFTNames, setOwnedNFTNames] = useState<string[]>([]);
+const [totaltwo, setTotaltwo] = useState('')
  const address = useAddress();
   const [hasClaimedNFT, setHasClaimedNFT] = useState(false)
   const [isClaiming, setIsClaiming] = useState(false)
@@ -37,10 +38,15 @@ const [ownedNFTNames, setOwnedNFTNames] = useState<string[]>([]);
 const [showPopup, setShowPopup] = useState(false)
   
   
-  const { contract } = useContract(
-  "0xE62d775E3Cc91659034dFC3b09a46259D6942c2c", 
+  const { contract: firstContract } = useContract(
+        "0x62A4270F8EB826428B6afD158d647e56558AAf30", 
+        "signature-drop"
+    );
+
+    const { contract: secondContract } = useContract(
+        "0xE62d775E3Cc91659034dFC3b09a46259D6942c2c", 
   "signature-drop"
-);
+    );
     
   useEffect(() => {
     if (!address) {
@@ -49,11 +55,18 @@ const [showPopup, setShowPopup] = useState(false)
 
     const checkBalance = async () => {
       try {
-        if (contract) {
-      const nfts = await contract.getOwned(address);
+        if ( firstContract) {
+      const nfts = await  firstContract.getOwned(address);
           setHasClaimedNFT(nfts?.length > 0);
           
           setTotal(nfts.length.toString());
+          
+        }
+             if ( secondContract ) {
+      const nfts = await  secondContract.getOwned(address);
+          setHasClaimedNFT(nfts?.length > 0);
+          
+          setTotaltwo(nfts.length.toString());
           
     }
       } catch (error) {
@@ -62,7 +75,7 @@ const [showPopup, setShowPopup] = useState(false)
       }
       }
     checkBalance()
-  }, [address, contract])
+  }, [address, firstContract, secondContract])
  type NFT = {
   metadata: {
     name: string
@@ -74,12 +87,16 @@ const getNFTNames = (nfts: NFT[]) => {
     .filter(name => typeof name === 'string') as string[];
   setOwnedNFTNames(ownedNFTNames);
 };
-  
+  const getNFTNamestwo = (nfts: NFT[]) => {
+  const ownedNFTNamestwo = nfts.map(nft => nft.metadata.name)
+    .filter(name => typeof name === 'string') as string[];
+  setOwnedNFTNamestwo(ownedNFTNamestwo);
+};
   const mintNft = async () => {
     try {
-      if (contract) {
+      if (firstContract) {
         setIsClaiming(true)
-        await contract.claim(1)
+        await firstContract.claim(1)
         setHasClaimedNFT(true)
       }
     } catch (error) {
@@ -105,7 +122,9 @@ const getNFTNames = (nfts: NFT[]) => {
       total,
       selectedOption,
       streetAddress,
-      nftNames: ownedNFTNames
+      nftNames: ownedNFTNames,
+      totaltwo,
+      nftNamestwo: ownedNFTNamestwo
     }
 
     const rawResponse = await fetch('/api/submit', {
@@ -131,6 +150,9 @@ const getNFTNames = (nfts: NFT[]) => {
     setSelectedOption('')
     setStreetAddress('')
     setOwnedNFTNames([])
+    setOwnedNFTNamestwo([])
+    setTotaltwo('')
+    
   }
   useEffect(() => {
     if (!address) {
@@ -139,11 +161,18 @@ const getNFTNames = (nfts: NFT[]) => {
 
     const getOwnedNFTNames = async () => {
       try {
-        if (contract) {
-          const nfts = await contract.getOwned(address);
+        if (firstContract) {
+          const nfts = await firstContract.getOwned(address);
           const ownedNFTNames = nfts.map((nft) => nft.metadata.name);
           const ownedNFTNamesFiltered = ownedNFTNames.filter((nft) => nft !== undefined) as string[];
 setOwnedNFTNames(ownedNFTNamesFiltered);
+          
+        }
+         if (secondContract) {
+          const nfts = await secondContract.getOwned(address);
+          const ownedNFTNamestwo = nfts.map((nft) => nft.metadata.name);
+          const ownedNFTNamestwoFiltered = ownedNFTNamestwo.filter((nft) => nft !== undefined) as string[];
+setOwnedNFTNamestwo(ownedNFTNamestwoFiltered);
           
         }
       } catch (error) {
@@ -152,7 +181,7 @@ setOwnedNFTNames(ownedNFTNamesFiltered);
     };
 
     getOwnedNFTNames();
-  }, [address, contract]);
+  }, [address, firstContract, secondContract]);
   useEffect(() => {
     if (address) {
       setWallet(address);
@@ -164,10 +193,7 @@ setOwnedNFTNames(ownedNFTNamesFiltered);
   return (<div className='overflow-hidden'> 
         <div>
            
-   <div>
-     {ownedNFTNames.map((name, index) => (
-  <p key={index}>{name}</p>))}
-    </div>
+ 
        
         </div>
     <div className='min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12 bg-cover'
@@ -260,6 +286,17 @@ setOwnedNFTNames(ownedNFTNamesFiltered);
         className="shadow-md focus:ring-indigo-500 focus:border-indigo-500 block w-96 sm:text-md border-gray-300 rounded-md"
         readOnly required
       />
+    </div>   <div className="flex flex-col items-center justify-center">
+      <label htmlFor="nft-count" className="text-base font-medium text-left w-96 mb-2">Total NFTs Owned:</label>
+      <input
+        type="text"
+        id="nft-count"
+        name="nft-count"
+        value={totaltwo}
+        onChange={(e) => setTotaltwo(e.target.value)}
+        className="shadow-md focus:ring-indigo-500 focus:border-indigo-500 block w-96 sm:text-md border-gray-300 rounded-md"
+        readOnly required
+      />
     </div><div className="flex hidden flex-col items-center justify-center">
   <label htmlFor="nft-names" className="text-base font-medium text-left w-96 mb-2">NFT Names:</label>
   <textarea
@@ -267,6 +304,16 @@ setOwnedNFTNames(ownedNFTNamesFiltered);
     name="nft-names"
     value={ownedNFTNames.join(', ')}
     onChange={(e) => setOwnedNFTNames(e.target.value.split(','))}
+    className="shadow-md focus:ring-indigo-500 focus:border-indigo-500 block w-96 sm:text-md border-gray-300 rounded-md"
+    readOnly required
+  />
+</div><div className="flex hidden flex-col items-center justify-center">
+  <label htmlFor="nft-names" className="text-base font-medium text-left w-96 mb-2">NFT Names:</label>
+  <textarea
+    id="nft-names"
+    name="nft-names"
+    value={ownedNFTNamestwo.join(', ')}
+    onChange={(e) => setOwnedNFTNamestwo(e.target.value.split(','))}
     className="shadow-md focus:ring-indigo-500 focus:border-indigo-500 block w-96 sm:text-md border-gray-300 rounded-md"
     readOnly required
   />

@@ -28,7 +28,7 @@ const Home: NextPage = () => {
   const [selectedOption, setSelectedOption] = useState('no');
 const [option, setOption] = useState(selectedOption)
   const [streetAddress, setStreetAddress] = useState('')
-  const [btnCheck, setBtnCheck] = useState('')
+
 
  const address = useAddress();
   const [hasClaimedNFT, setHasClaimedNFT] = useState(false)

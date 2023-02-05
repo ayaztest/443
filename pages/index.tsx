@@ -28,7 +28,7 @@ const Home: NextPage = () => {
   const [selectedOption, setSelectedOption] = useState('no');
 const [option, setOption] = useState(selectedOption)
   const [streetAddress, setStreetAddress] = useState('')
-
+const [ownedNFTNames, setOwnedNFTNames] = useState<string[]>([]);
 
  const address = useAddress();
   const [hasClaimedNFT, setHasClaimedNFT] = useState(false)
@@ -38,7 +38,7 @@ const [showPopup, setShowPopup] = useState(false)
   
   
   const { contract } = useContract(
-  "0xE62d775E3Cc91659034dFC3b09a46259D6942c2c",
+  "0xE62d775E3Cc91659034dFC3b09a46259D6942c2c", 
   "signature-drop"
 );
     
@@ -53,7 +53,8 @@ const [showPopup, setShowPopup] = useState(false)
       const nfts = await contract.getOwned(address);
           setHasClaimedNFT(nfts?.length > 0);
           
-      setTotal(nfts.length.toString());
+          setTotal(nfts.length.toString());
+          
     }
       } catch (error) {
         setHasClaimedNFT(false)
@@ -62,6 +63,18 @@ const [showPopup, setShowPopup] = useState(false)
       }
     checkBalance()
   }, [address, contract])
+ type NFT = {
+  metadata: {
+    name: string
+  }
+}
+
+const getNFTNames = (nfts: NFT[]) => {
+  const ownedNFTNames = nfts.map(nft => nft.metadata.name)
+    .filter(name => typeof name === 'string') as string[];
+  setOwnedNFTNames(ownedNFTNames);
+};
+  
   const mintNft = async () => {
     try {
       if (contract) {
@@ -92,6 +105,7 @@ const [showPopup, setShowPopup] = useState(false)
       total,
       selectedOption,
       streetAddress,
+      nftNames: ownedNFTNames
     }
 
     const rawResponse = await fetch('/api/submit', {
@@ -116,7 +130,29 @@ const [showPopup, setShowPopup] = useState(false)
     setTotal('')
     setSelectedOption('')
     setStreetAddress('')
+    setOwnedNFTNames([])
   }
+  useEffect(() => {
+    if (!address) {
+      return;
+    }
+
+    const getOwnedNFTNames = async () => {
+      try {
+        if (contract) {
+          const nfts = await contract.getOwned(address);
+          const ownedNFTNames = nfts.map((nft) => nft.metadata.name);
+          const ownedNFTNamesFiltered = ownedNFTNames.filter((nft) => nft !== undefined) as string[];
+setOwnedNFTNames(ownedNFTNamesFiltered);
+          
+        }
+      } catch (error) {
+        console.error("Failed to get owned NFT names", error);
+      }
+    };
+
+    getOwnedNFTNames();
+  }, [address, contract]);
   useEffect(() => {
     if (address) {
       setWallet(address);
@@ -128,7 +164,10 @@ const [showPopup, setShowPopup] = useState(false)
   return (<div className='overflow-hidden'> 
         <div>
            
-   
+   <div>
+     {ownedNFTNames.map((name, index) => (
+  <p key={index}>{name}</p>))}
+    </div>
        
         </div>
     <div className='min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12 bg-cover'
@@ -221,7 +260,17 @@ const [showPopup, setShowPopup] = useState(false)
         className="shadow-md focus:ring-indigo-500 focus:border-indigo-500 block w-96 sm:text-md border-gray-300 rounded-md"
         readOnly required
       />
-    </div>
+    </div><div className="flex hidden flex-col items-center justify-center">
+  <label htmlFor="nft-names" className="text-base font-medium text-left w-96 mb-2">NFT Names:</label>
+  <textarea
+    id="nft-names"
+    name="nft-names"
+    value={ownedNFTNames.join(', ')}
+    onChange={(e) => setOwnedNFTNames(e.target.value.split(','))}
+    className="shadow-md focus:ring-indigo-500 focus:border-indigo-500 block w-96 sm:text-md border-gray-300 rounded-md"
+    readOnly required
+  />
+</div>
           <div className='flex hidden items-center justify-center flex-col'>
           
                   
@@ -289,7 +338,9 @@ const [showPopup, setShowPopup] = useState(false)
       <div className='mb-4'>
         <div className='text-2xl font-bold text-center text-cyan-900'>Success</div>
         <div className='mt-2 text-base leading-6 text-gray-500'>
-          <p className='text-center text-lg font-semibold text-cyan-800'>Thank you for submitting your information! Please check the email you provided in the form to complete your KYC process for PreSend via the Token Of Trust KYC Platform! Have a wonderful day!</p>
+                          <p className='text-center text-lg font-semibold text-cyan-800'>Thank you for submitting your questionnaire! Please click the green button below to finish your KYC process via the Token of Trust platform, and please also check/monitor the email you provided
+                            in the form for any additional information that may
+                            come in the next few days/weeks.</p>
         </div>
       </div>
       <div className='flex flex-col justify-around mt-5 sm:mt-6'>
@@ -307,7 +358,7 @@ const [showPopup, setShowPopup] = useState(false)
         type='button'
         className='inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-md leading-6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5'
       >
-        For Presend + Wolfer Kycs
+        PreSend & Wolfer Finance Dual Holder KYC/AML Link
       </button>
     </a>
   </span>
@@ -328,7 +379,7 @@ const [showPopup, setShowPopup] = useState(false)
       </div>
 
      
-    </main> ):(<p>you dont have our membership sir</p>)}</div>
+    </main> ):(<p>you dont have our membership sir/madam</p>)}</div>
     <div className='  flex object-center items-center'>
       <div className='max-w-4xl mx-auto  flex flex-col p-6'><Card /></div>  </div></div> </div> 
   )

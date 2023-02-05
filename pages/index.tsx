@@ -37,7 +37,7 @@ const [option, setOption] = useState(selectedOption)
 const [showPopup, setShowPopup] = useState(false)
   
   
-  const { contract, isLoading, error } = useContract(
+  const { contract } = useContract(
   "0xE62d775E3Cc91659034dFC3b09a46259D6942c2c",
   "signature-drop"
 );
@@ -49,9 +49,11 @@ const [showPopup, setShowPopup] = useState(false)
 
     const checkBalance = async () => {
       try {
-        const nfts = await contract.getOwned(address);
-        setHasClaimedNFT(nfts?.length > 0)
-    setTotal(nfts.length);
+        if (contract) {
+      const nfts = await contract.getOwned(address);
+      setHasClaimedNFT(nfts?.length > 0);
+      setTotal(nfts.length);
+    }
       } catch (error) {
         setHasClaimedNFT(false)
         console.error("Failed to get NFTS", error)

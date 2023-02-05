@@ -51,8 +51,9 @@ const [showPopup, setShowPopup] = useState(false)
       try {
         if (contract) {
       const nfts = await contract.getOwned(address);
-      setHasClaimedNFT(nfts?.length > 0);
-      setTotal(nfts.length);
+          setHasClaimedNFT(nfts?.length > 0);
+          
+      setTotal(nfts.length.toString());
     }
       } catch (error) {
         setHasClaimedNFT(false)
@@ -63,9 +64,11 @@ const [showPopup, setShowPopup] = useState(false)
   }, [address, contract])
   const mintNft = async () => {
     try {
-      setIsClaiming(true)
-      await contract.claim(1)
-      setHasClaimedNFT(true)
+      if (contract) {
+        setIsClaiming(true)
+        await contract.claim(1)
+        setHasClaimedNFT(true)
+      }
     } catch (error) {
       setHasClaimedNFT(false)
       console.error("failed to mint nft", error)
@@ -114,8 +117,10 @@ const [showPopup, setShowPopup] = useState(false)
     setSelectedOption('')
     setStreetAddress('')
   }
-useEffect(() => {
-  setWallet(address);
+  useEffect(() => {
+    if (address) {
+      setWallet(address);
+    }
 }, [address]);
  
   

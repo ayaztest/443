@@ -128,9 +128,9 @@ useEffect(() => {
   style={{ backgroundImage: "url('https://unsplash.com/photos/Uj3S6JiXxaA')" }}>
     <div className='relative py-3 sm:max-w-xl sm:mx-auto mb-14'>
      <ConnectWallet />  {hasClaimedNFT ? (
-  <main className='relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20 bg-clip-padding bg-opacity-60 border border-gray-200' >
+  <main className='relative mt-4 px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20 bg-clip-padding bg-opacity-60 border border-gray-200' >
    <div>
-          <img src="https://presend.io/wp-content/uploads/2022/08/cropped-PreSend-Logo2B-2048x597.png" className="h-16 sm:h-24" />
+          <img src="https://presend.io/wp-content/uploads/2023/02/pb.png" className="h-16 sm:h-24" />
         </div>   <div className='max-w-5xl mx-auto py-2'>
         <form className='py-4 space-y-4' onSubmit={handleSubmit}>
           <div className='flex items-center justify-center'>
@@ -215,7 +215,7 @@ useEffect(() => {
         readOnly required
       />
     </div>
-          <div className='flex items-center justify-center flex-col'>
+          <div className='flex hidden items-center justify-center flex-col'>
           
                   
             <label htmlFor='wallet' className="text-base font-medium text-left w-96 mb-2">Your Wallet Address:
@@ -227,7 +227,7 @@ useEffect(() => {
               name='wallet'
               id='wallet'
               className='shadow-md focus:ring-indigo-500 focus:border-indigo-500 block w-96 sm:text-md border-gray-300 rounded-md'
-             placeholder='Your Wallet'  readOnly required
+             placeholder='Your Wallet'  readOnly 
             />
                
                 </div><div className="flex flex-col mt-5">
@@ -293,7 +293,7 @@ useEffect(() => {
           >
             PreSend Kyc
           </button>
-        </a> {selectedOption ? (
+        </a> 
   <span className='flex  rounded-md shadow-sm'>
     <a href='https://presend.io' target='_blank' rel='noopener noreferrer'>
       <button
@@ -304,9 +304,7 @@ useEffect(() => {
       </button>
     </a>
   </span>
-) : (
-  ''
-)}
+
       </div>
       <button
         type='button'

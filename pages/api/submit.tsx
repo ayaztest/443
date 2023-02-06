@@ -7,12 +7,11 @@ type SheetForm = {
     email: string
     country: string
     wallet: string
-    nftNames: string[]
+    
     total: string
     selectedOption: string
     streetAddress: string
-    totaltwo: string
-    nftNamestwo: string[]
+    
 }
 
 export default async function handler(
@@ -47,8 +46,7 @@ export default async function handler(
             version: 'v4'
         });
 
-        const nftNames = body.nftNames.join(', ')
-        const nftNamestwo = body.nftNamestwo.join(', ')
+        
         const response = await sheets.spreadsheets.values.append({
             spreadsheetId: process.env.GOOGLE_SHEET_ID,
             range: 'A1:K1',
@@ -57,7 +55,7 @@ export default async function handler(
                 values: [
                     [body.firstname, body.lastname, body.email,
                         body.streetAddress, body.country, body.wallet,
-                        body.total, body.selectedOption, nftNames, body.totaltwo, nftNamestwo]
+                        body.total, body.selectedOption, ]
                 ]
             }
         });

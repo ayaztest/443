@@ -19,10 +19,13 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    console.log('Entered the serverless function');
+
+  res.status(200).json({ message: 'Hello from the serverless function' });
     
     if (req.method !== 'POST') {
         return res.status(405).send({ message: 'Only POST requests allowed' })
-    }
+    } 
 
     const body = req.body as SheetForm
 

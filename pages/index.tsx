@@ -77,38 +77,36 @@ const [showPopup, setShowPopup] = useState(false)
       setWallet(address);
     }
 }, [address]);
-useEffect(() => {
-  if (!address) {
-    return;
-  }
-interface NFT {
-  id: string;
-  metadata: {
-    name: string;
-  };
-}
-const getOwnedNFTData = async () => {
-  try {
-    const firstNFTs = firstContract ? await firstContract.getOwned(address) : [];
-    const secondNFTs = secondContract ? await secondContract.getOwned(address) : [];
-    setHasClaimedNFT(firstNFTs.length + secondNFTs.length > 0);
-    setTotal((firstNFTs.length + secondNFTs.length).toString());
+  useEffect(() => {
+    if (!address) {
+      return;
+    }
 
-    setOwnedNFTNames(getNFTNames(firstNFTs));
-    setOwnedNFTNamestwo(getNFTNames(secondNFTs));
-  } catch (error) {
-    setHasClaimedNFT(false);
-    console.error("Failed to get owned NFT data", error);
-  }
-};
+    const getOwnedNFTData = async () => {
+      try {
+        const firstNFTs = firstContract ? await firstContract.getOwned(address) : [];
+        const secondNFTs = secondContract ? await secondContract.getOwned(address) : [];
+        setHasClaimedNFT(firstNFTs.length + secondNFTs.length > 0);
+        setTotal((firstNFTs.length + secondNFTs.length).toString());
 
-  getOwnedNFTData();
-}, [address, firstContract, secondContract]);
+        scss
 
-const getNFTNames = (nfts: NFT[]) => {
-  return nfts.map(nft => nft.metadata.name)
-    .filter(name => typeof name === 'string') as string[];
-};
+        setOwnedNFTNames(getNFTNames(firstNFTs));
+        setOwnedNFTNamestwo(getNFTNames(secondNFTs));
+      } catch (error) {
+        setHasClaimedNFT(false);
+        console.error("Failed to get owned NFT data", error);
+      }
+
+    };
+
+    const getNFTNames = (nfts) => {
+      return nfts.map((nft) => {
+        const name = nft.metadata.name;
+        return typeof name === "string" ? name.split(" #")[1] : "";
+      });
+    }
+  })
  
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()

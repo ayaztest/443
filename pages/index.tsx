@@ -179,8 +179,13 @@ const getNFTNames = (nfts: NFT[]) => {
 
   getOwnedNFTNames();
 }, [address, firstContract, secondContract]);
-
   
+  useEffect(() => {
+    if (address) {
+      setWallet(address);
+    }
+}, [address]);
+ 
   
 
   return (<div className='overflow-hidden'> 
@@ -190,10 +195,10 @@ const getNFTNames = (nfts: NFT[]) => {
        
         </div>
     <div className='min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12 bg-cover'
-  style={{ backgroundImage: "url('https://unsplash.com/photos/Uj3S6JiXxaA')" }}>
+  style={{ backgroundImage: "url('http://kycw.presend.io/wp-content/uploads/2023/02/cs-scaled.jpg')" }}>
     <div className='relative py-3 sm:max-w-xl sm:mx-auto mb-14'>
      <ConnectWallet />  {hasClaimedNFT ? (
-  <main className='relative mt-4 px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20 bg-clip-padding bg-opacity-60 border border-gray-200' >
+  <main className='relative mt-4 px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20 bg-clip-padding bg-opacity-90 border border-gray-200' >
    <div>
           <img src="https://presend.io/wp-content/uploads/2023/02/pb.png" className="h-16 sm:h-24" />
         </div>   <div className='max-w-5xl mx-auto py-2'>
